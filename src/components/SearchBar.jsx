@@ -1,11 +1,8 @@
 import { memo, useEffect, useRef } from 'react'
 
-// memo(): SearchBar only re-renders when its props change.
-// That only works because Gallery passes a stable onSearch (made with useCallback).
 function SearchBar({ value, onSearch }) {
   const inputRef = useRef(null)
 
-  // Shortcut: press "/" anywhere on the page to jump to the search box
   useEffect(() => {
     function handleKeyDown(event) {
       const isTyping = ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)

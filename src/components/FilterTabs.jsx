@@ -1,6 +1,5 @@
 import { memo } from 'react'
 
-// Switch between all photos and only favourites. The dark pill slides under the active option.
 function FilterTabs({ view, onChange, total, favouriteCount }) {
   const options = [
     { id: 'all', label: 'All photos', count: total },

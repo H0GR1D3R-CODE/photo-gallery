@@ -2,13 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { photoUrl } from '../utils/photoUrl'
 import HeartIcon from './HeartIcon'
 
-// Full-screen photo viewer. `photos` is the list currently on screen (after search / favourites filter),
-// so the arrows move through exactly what the user was looking at.
 export default function Lightbox({ photos, index, isFavourite, onToggleFavourite, onSelect, onClose }) {
   const photo = photos[index]
   const total = photos.length
   const closeButtonRef = useRef(null)
-  // -1 = came from the right (went back), 1 = came from the left (went forward), 0 = just opened
   const [direction, setDirection] = useState(0)
 
   function showPrevious() {
@@ -21,7 +18,6 @@ export default function Lightbox({ photos, index, isFavourite, onToggleFavourite
     onSelect(photos[(index + 1) % total].id)
   }
 
-  // Keyboard: Esc closes, ← and → move between photos
   useEffect(() => {
     function handleKeyDown(event) {
       if (event.key === 'Escape') onClose()
@@ -32,8 +28,6 @@ export default function Lightbox({ photos, index, isFavourite, onToggleFavourite
     return () => window.removeEventListener('keydown', handleKeyDown)
   })
 
-  // On open: move focus into the viewer and stop the page behind it from scrolling.
-  // On close: undo both, and put focus back on the photo that was clicked.
   useEffect(() => {
     const previouslyFocused = document.activeElement
     closeButtonRef.current?.focus()
@@ -70,13 +64,11 @@ export default function Lightbox({ photos, index, isFavourite, onToggleFavourite
         </button>
       </div>
 
-      {/* Clicking the dark area around the photo closes the viewer */}
       <div
         className="relative flex min-h-0 flex-1 items-center justify-center px-4 sm:px-24"
         onClick={(event) => event.target === event.currentTarget && onClose()}
       >
         {total > 1 && <ArrowButton direction="previous" onClick={showPrevious} />}
-        {/* key: a new photo mounts a fresh LightboxImage, so its "loaded" state starts over */}
         <LightboxImage key={photo.id} photo={photo} direction={direction} />
         {total > 1 && <ArrowButton direction="next" onClick={showNext} />}
       </div>
@@ -128,16 +120,12 @@ function LightboxImage({ photo, direction }) {
     <div
       className={`relative overflow-hidden bg-black/30 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] ${slide}`}
       style={{
-        // Same name as the clicked card in the grid → the browser morphs the card into this
         viewTransitionName: 'active-photo',
         aspectRatio: ratio,
-        // As wide as possible while still fitting the screen height
         width: `min(100%, calc((100dvh - 15rem) * ${ratio}))`,
       }}
     >
-      {/* The grid thumbnail is already cached, so something shows instantly */}
       <img src={photoUrl(photo.id, 600, 400)} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" />
-      {/* Then a sharper 1600px version fades in over it */}
       <img
         src={photoUrl(photo.id, largeWidth, Math.round(largeWidth / ratio))}
         alt={`Photograph by ${photo.author}`}

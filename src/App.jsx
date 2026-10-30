@@ -11,9 +11,6 @@ export default function App() {
           Thirty photographs from Picsum
         </p>
 
-        {/* Each letter is its own span so they can rise in one after another.
-            Letters are grouped per word so a word never breaks across two lines.
-            Screen readers read the aria-label instead of separate letters. */}
         <h1
           aria-label={TITLE}
           className="mt-5 font-display text-5xl uppercase tracking-[0.18em] text-ink sm:text-6xl lg:text-7xl"
@@ -36,7 +33,6 @@ export default function App() {
           ))}
         </h1>
 
-        {/* Gold ornament divider, like the rule on a printed invitation. The lines draw outward from the centre. */}
         <div aria-hidden="true" className="mx-auto mt-7 flex max-w-xs items-center gap-4 text-foil">
           <span className="h-px flex-1 origin-right bg-gradient-to-r from-transparent to-foil motion-safe:animate-draw [animation-delay:700ms]" />
           <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[1.2] motion-safe:animate-fade-in [animation-delay:600ms]">

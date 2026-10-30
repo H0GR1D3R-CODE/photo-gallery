@@ -16,29 +16,25 @@ import SearchBar from './SearchBar'
 import Spinner from './Spinner'
 
 export default function Gallery() {
-  // 1. Data comes from the custom hook — Gallery never calls fetch() itself
   const { photos, loading, error } = useFetchPhotos()
 
-  // 2. Favourites live in a reducer. The third argument (loadFavourites) runs once
-  //    to read the saved list from localStorage before the first render.
+  // loadFavourites runs once and reads the saved list from localStorage
   const [favourites, dispatch] = useReducer(favouritesReducer, [], loadFavourites)
 
   const [query, setQuery] = useState('')
-  const [view, setView] = useState('all') // 'all' | 'favourites'
-  const [activeId, setActiveId] = useState(null) // the photo last opened in the viewer
+  const [view, setView] = useState('all')
+  const [activeId, setActiveId] = useState(null)
   const [viewerOpen, setViewerOpen] = useState(false)
 
-  // 3. Save favourites to localStorage every time the list changes
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(favourites))
     } catch {
-      // Storage can be full or blocked; the app keeps working, it just won't persist
+      // storage blocked or full, the app still works
     }
   }, [favourites])
 
-  // 4. useCallback: keeps the SAME function between renders,
-  //    so the memoised SearchBar doesn't re-render when only favourites change.
+  // useCallback keeps the same function so the memoised SearchBar doesn't re-render
   const handleSearch = useCallback((value) => {
     setQuery(value)
   }, [])
@@ -53,28 +49,22 @@ export default function Gallery() {
     }
   }, [])
 
-  // Opening/closing the viewer and switching tabs are wrapped in a View Transition,
-  // so the browser animates elements between their old and new positions.
   const handleOpen = useCallback((id) => {
-    // First mark which card the viewer grows out of, then open the viewer as a transition
     flushSync(() => setActiveId(id))
     withViewTransition(() => setViewerOpen(true))
   }, [])
   const handleClose = useCallback(() => withViewTransition(() => setViewerOpen(false)), [])
   const handleViewChange = useCallback((nextView) => withViewTransition(() => setView(nextView), 'filter'), [])
 
-  // 5. useMemo: only re-filter when the photos or the search text change,
-  //    not on every render (e.g. when a heart is clicked or the viewer opens).
+  // useMemo: only filter again when photos or the search text change
   const searchResults = useMemo(() => {
     const search = query.trim().toLowerCase()
     if (!search) return photos
     return photos.filter((photo) => photo.author.toLowerCase().includes(search))
   }, [photos, query])
 
-  // A Set gives a fast "is this photo a favourite?" lookup for each card
   const favouriteIds = useMemo(() => new Set(favourites), [favourites])
 
-  // The Favourites tab narrows the search results down further
   const visiblePhotos = useMemo(
     () => (view === 'favourites' ? searchResults.filter((photo) => favouriteIds.has(photo.id)) : searchResults),
     [searchResults, view, favouriteIds],
@@ -82,8 +72,6 @@ export default function Gallery() {
 
   const activeIndex = visiblePhotos.findIndex((photo) => photo.id === activeId)
 
-  // If the open photo leaves the list (e.g. un-favourited while on the Favourites tab), close the viewer.
-  // React allows this kind of state update during render; it re-renders straight away.
   if (viewerOpen && activeIndex === -1) {
     setViewerOpen(false)
   }
@@ -92,7 +80,6 @@ export default function Gallery() {
 
   return (
     <>
-      {/* Search and filters stay pinned to the top while scrolling */}
       <div className="toolbar sticky top-0 z-10 -mx-4 border-b border-foil/20 bg-vellum/85 px-4 py-3 backdrop-blur-md sm:-mx-8 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
           <div className="lg:max-w-md lg:flex-1">
@@ -150,7 +137,6 @@ export default function Gallery() {
         )}
 
         {ready && visiblePhotos.length > 0 && (
-          // 1 column on mobile, 2 on tablet (md), 4 on desktop (lg)
           <section className="grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-4">
             {visiblePhotos.map((photo, index) => (
               <PhotoCard
