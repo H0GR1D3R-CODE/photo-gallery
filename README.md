@@ -6,6 +6,8 @@ It fetches 30 photos from the [Picsum Photos API](https://picsum.photos/v2/list?
 
 The visual style borrows from wedding stationery: engraved-style headings, photos mounted like real prints on paper, and a **wax seal** as the favourite button.
 
+**Live demo: https://h0gr1d3r-code.github.io/photo-gallery/**
+
 ## Run it locally
 
 Needs [Node.js](https://nodejs.org) 20 or newer.

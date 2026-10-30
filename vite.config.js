@@ -3,12 +3,12 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
+  // GitHub Pages serves the site from /photo-gallery/, so the build needs that prefix
+  base: command === 'build' ? '/photo-gallery/' : '/',
   server: {
     port: 5173,
-    // Listen on the local network too, so the terminal prints a "Network:" link
-    // that phones and other computers on the same Wi-Fi can open
     host: true,
   },
-})
+}))
