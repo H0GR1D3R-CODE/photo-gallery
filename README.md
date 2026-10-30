@@ -8,12 +8,20 @@ The visual style borrows from wedding stationery: engraved-style headings, photo
 
 ## Run it locally
 
+Needs [Node.js](https://nodejs.org) 20 or newer.
+
 ```bash
+git clone https://github.com/H0GR1D3R-CODE/photo-gallery.git
+cd photo-gallery
 npm install
 npm run dev
 ```
 
-Then open http://localhost:5173.
+Then open **http://localhost:5173** in Chrome or Edge.
+
+The terminal also prints a `Network:` link (for example `http://192.168.1.5:5173`). Open that one on a phone or another computer on the same Wi-Fi.
+
+The app fetches photos from `picsum.photos`, so it needs an internet connection.
 
 ## Requirements checklist
 
